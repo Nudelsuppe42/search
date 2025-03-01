@@ -1,18 +1,21 @@
 import { bangs } from "./bang";
 import "./global.css";
 
-function noSearchDefaultPageRender() {
+/**
+ * Render the default page when no search query is present
+ */
+function defaultPageRender() {
   const app = document.querySelector<HTMLDivElement>("#app")!;
   app.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
       <div class="content-container">
-        <h1>Und*ck</h1>
-        <p>DuckDuckGo's bang redirects are too slow. Add the following URL as a custom search engine to your browser. Enables <a href="https://duckduckgo.com/bang.html" target="_blank">all of DuckDuckGo's bangs.</a></p>
+        <h1>!see</h1>
+        <p>Bang redirects of DuckDuckGo, but faster and locally!</p>
         <div class="url-container"> 
           <input 
             type="text" 
             class="url-input"
-            value="https://unduck.link?q=%s"
+            value="https://see.nudl.dev?q=%s"
             readonly 
           />
           <button class="copy-button">
@@ -21,11 +24,12 @@ function noSearchDefaultPageRender() {
         </div>
       </div>
       <footer class="footer">
-        <a href="https://t3.chat" target="_blank">t3.chat</a>
+        <a href="https://nudl.dev" target="_blank">nudl</a>
         •
-        <a href="https://x.com/theo" target="_blank">theo</a>
+        <a href="https://x.com/theo" target="_blank">t3</a>
+      
         •
-        <a href="https://github.com/t3dotgg/unduck" target="_blank">github</a>
+        <a href="https://github.com/Nudelsuppe42/search" target="_blank">github</a>
       </footer>
     </div>
   `;
@@ -47,11 +51,15 @@ function noSearchDefaultPageRender() {
 const LS_DEFAULT_BANG = localStorage.getItem("default-bang") ?? "g";
 const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
 
-function getBangredirectUrl() {
+/**
+ * Find the correct URl to redirect to based on the bang query
+ * @returns The URL to redirect to, or null if no search is present
+ */
+function getBangRedirectUrl() {
   const url = new URL(window.location.href);
   const query = url.searchParams.get("q")?.trim() ?? "";
   if (!query) {
-    noSearchDefaultPageRender();
+    defaultPageRender();
     return null;
   }
 
@@ -75,8 +83,11 @@ function getBangredirectUrl() {
   return searchUrl;
 }
 
+/**
+ * Initial redirect function
+ */
 function doRedirect() {
-  const searchUrl = getBangredirectUrl();
+  const searchUrl = getBangRedirectUrl();
   if (!searchUrl) return;
   window.location.replace(searchUrl);
 }

@@ -1,7 +1,7 @@
 {
-  "name": "unduck",
+  "name": "search",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,5 +14,6 @@
   },
   "dependencies": {
     "vite-plugin-pwa": "^0.21.1"
-  }
+  },
+  "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }
