@@ -29,6 +29,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+*::selection {
+  background-color: rgb(250, 250, 249);
+  color: rgb(12, 10, 9);
+}
+
 /* Reset */
 * {
   margin: 0;
@@ -132,6 +137,12 @@ textarea {
 
 .copy-button.copied {
   background: #28a745;
+}
+
+.credits {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #aaa;
 }
 
 /* Dark footer styles */

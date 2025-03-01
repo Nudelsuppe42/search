@@ -24,6 +24,7 @@ function defaultPageRender() {
         </div>
       </div>
       <footer class="footer">
+        <p class="credits">Original by theo/t3.gg</p>
         <a href="https://nudl.dev" target="_blank">nudl</a>
         •
         <a href="https://x.com/theo" target="_blank">t3</a>
