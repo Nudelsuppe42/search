@@ -65,6 +65,25 @@ function getBangRedirectUrl() {
     return null;
   }
 
+  // Check if the query is a valid URL
+  try {
+    const domainPattern = new RegExp(
+      "^([a-zA-Z]+:\\/\\/)?" + // protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+        "(\\#[-a-z\\d_]*)?$", // fragment locator
+      "i"
+    );
+
+    if (domainPattern.test(query)) {
+      return query.startsWith("https://")?query:`https://${query}`; // If it's a valid URL, return it directly
+    }
+  } catch {
+    // Not a valid URL, continue with bang logic
+  }
+
   const match = query.match(/!(\S+)/i);
 
   const bangCandidate = match?.[1]?.toLowerCase();
