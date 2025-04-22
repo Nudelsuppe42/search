@@ -1,12 +1,109 @@
 import { bangs } from "./bang";
 import "./global.css";
 
+const LS_DEFAULT_BANG = localStorage.getItem("default-bang") ?? "g";
+const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
+
 /**
  * Render the default page when no search query is present
  */
 function defaultPageRender() {
   const app = document.querySelector<HTMLDivElement>("#app")!;
-  app.innerHTML = `
+  const pathname = window.location.pathname;
+  const searchParams = new URLSearchParams(window.location.search);
+  const query = searchParams.get("q")?.trim() ?? "";
+  if (pathname !== "/") {
+    console.log("Not on the default page, displaying error");
+
+    app.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+      <div class="content-container">
+        <img src="logo.webp" alt="Nudlsupp logo" class="logo" />
+        <h1>Hmm...</h1>
+        <p>This query doesnt seem right. </p>
+        <div class="url-container"> 
+            <a href="${
+              "/?q=" + pathname.replace("/", "")
+            }" class="primary-button">Try Method 2</a>
+        </div>
+      </div>
+      <footer class="footer">
+        <p class="credits">Original by theo/t3.gg</p>
+        <a href="https://nudl.dev" target="_blank">nudl</a>
+        •
+        <a href="https://x.com/theo" target="_blank">t3</a>
+      
+        •
+        <a href="https://github.com/Nudelsuppe42/search" target="_blank">github</a>
+      </footer>
+    </div>
+  `;
+    window.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        window.location.replace("/?q=" + pathname.replace("/", ""));
+      }
+    });
+    window.addEventListener("click", (e) => {
+      window.location.replace("/?q=" + pathname.replace("/", ""));
+    });
+    return;
+  } else if (query) {
+    const match = query.match(/!(\S+)/i);
+    const bangCandidate = match?.[1]?.toLowerCase();
+
+    const cleanQuery = query.replace(/!\S+\s*/i, "").trim();
+    app.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+      <div class="content-container">
+        <img src="logo.webp" alt="Nudlsupp logo" class="logo" />
+        <h1>!${bangCandidate}</h1>
+        <p>Does not exist. Use other bangs or default bang!</p>
+        <div class="url-container"> 
+          <input 
+            type="text" 
+            class="url-input"
+            value="${defaultBang?.u.replace(
+              "{{{s}}}",
+              // Replace %2F with / to fix formats like "!ghr+t3dotgg/unduck"
+              encodeURIComponent(cleanQuery).replace(/%2F/g, "/")
+            )}"
+            readonly 
+          />
+          <button class="copy-button">
+            <img src="/search.svg" alt="Copy" />
+          </button>
+        </div>
+      </div>
+      <footer class="footer">
+        <p class="credits">Original by theo/t3.gg</p>
+        <a href="https://nudl.dev" target="_blank">nudl</a>
+        •
+        <a href="https://x.com/theo" target="_blank">t3</a>
+      
+        •
+        <a href="https://github.com/Nudelsuppe42/search" target="_blank">github</a>
+      </footer>
+    </div>
+  `;
+    const copyButton = app.querySelector<HTMLButtonElement>(".copy-button")!;
+    const urlInput = app.querySelector<HTMLInputElement>(".url-input")!;
+
+    copyButton.addEventListener("click", async () => {
+      window.location.replace(urlInput.value);
+    });
+
+    window.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        window.location.replace(urlInput.value);
+      }
+    });
+    window.addEventListener("click", (e) => {
+      window.location.replace(urlInput.value);
+    });
+
+    return;
+  } else {
+    app.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
       <div class="content-container">
         <img src="logo.webp" alt="Nudlsupp logo" class="logo" />
@@ -35,6 +132,7 @@ function defaultPageRender() {
       </footer>
     </div>
   `;
+  }
 
   const copyButton = app.querySelector<HTMLButtonElement>(".copy-button")!;
   const copyIcon = copyButton.querySelector("img")!;
@@ -49,9 +147,6 @@ function defaultPageRender() {
     }, 2000);
   });
 }
-
-const LS_DEFAULT_BANG = localStorage.getItem("default-bang") ?? "g";
-const defaultBang = bangs.find((b) => b.t === LS_DEFAULT_BANG);
 
 /**
  * Find the correct URl to redirect to based on the bang query
@@ -78,7 +173,7 @@ function getBangRedirectUrl() {
     );
 
     if (domainPattern.test(query)) {
-      return query.startsWith("https://")?query:`https://${query}`; // If it's a valid URL, return it directly
+      return query.startsWith("https://") ? query : `https://${query}`; // If it's a valid URL, return it directly
     }
   } catch {
     // Not a valid URL, continue with bang logic
@@ -87,13 +182,19 @@ function getBangRedirectUrl() {
   const match = query.match(/!(\S+)/i);
 
   const bangCandidate = match?.[1]?.toLowerCase();
-  const selectedBang = bangs.find((b) => b.t === bangCandidate) ?? defaultBang;
+  const selectedBang = bangs.find((b) => b.t === bangCandidate);
 
   // Remove the first bang from the query
   const cleanQuery = query.replace(/!\S+\s*/i, "").trim();
 
   // Format of the url is:
   // https://www.google.com/search?q={{{s}}}
+
+  if (!selectedBang) {
+    defaultPageRender();
+    return null;
+  }
+
   const searchUrl = selectedBang?.u.replace(
     "{{{s}}}",
     // Replace %2F with / to fix formats like "!ghr+t3dotgg/unduck"

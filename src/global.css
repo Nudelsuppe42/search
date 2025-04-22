@@ -74,7 +74,7 @@ a:hover {
   color: #fff;
 }
 
-button {
+button, .primary-button {
   font: inherit;
   border: none;
   background: none;
@@ -130,6 +130,26 @@ textarea {
   align-items: center;
   justify-content: center;
   background: #2a2a2a;
+}
+
+.primary-button {
+  padding: 8px 16px;
+  width: 100%;
+  font-weight: 600;
+  color: #0c0a09;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  text-decoration: none;
+}
+
+.primary-button:hover {
+  background: #cecece;
+  color: #0c0a09;
+
 }
 
 .copy-button:hover {
