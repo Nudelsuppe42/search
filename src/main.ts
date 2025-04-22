@@ -9,6 +9,7 @@ function defaultPageRender() {
   app.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
       <div class="content-container">
+        <img src="logo.webp" alt="Nudlsupp logo" class="logo" />
         <h1>!see</h1>
         <p>Bang redirects of DuckDuckGo, but faster and locally!</p>
         <div class="url-container"> 

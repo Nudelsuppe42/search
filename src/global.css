@@ -86,6 +86,16 @@ textarea {
   font: inherit;
 }
 
+.logo {
+  position:absolute;
+  max-width: 100px;
+  display: block;
+  border-radius: 50%;
+  top: 15vh;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 /* Container styles remain similar */
 .url-container {
   display: flex;
